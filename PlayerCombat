@@ -1,0 +1,63 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerCombat : MonoBehaviour
+{
+    private Animator anim; 
+    //Unity Accessable Variables
+    [SerializeField] private GameObject attackPoint; //reference empty object for attack point
+    [SerializeField] private float attackRange = 0.5f; //range from point outwards for attackrange
+    [SerializeField] private float damage; //amount of damage
+    [SerializeField] private LayerMask enemyLayers; //define what objects are enemies //LayerMask to detect layer
+    [Header("Attack Sound")]
+    [SerializeField] private AudioClip playerSwordSound; //send audio clip to soundmanager so sound can be played
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {                              
+        if (Input.GetMouseButton(0)) //check if left mouse button is pressed
+        {
+            anim.SetBool("isAttacking", true); //check is boolean is true
+        }
+
+    }
+
+    public void Attack() //call attack funtion
+    {
+        SoundManager.instance.PlaySound(playerSwordSound);
+        anim.SetTrigger("attack"); //play animation
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRange, enemyLayers); //creates circle from point and collects objects that comes in contact with it
+
+
+        foreach(Collider2D enemy in hitEnemies) //damage enemies 
+        {
+            Debug.Log("We hit " + enemy.name);
+            enemy.GetComponent<EnemyHealth>().health -= damage;
+        }
+    }
+
+    public void endAttack()
+    {
+        anim.SetBool("isAttacking", false);
+    }
+
+    public void Destroy()
+    {
+        anim.SetBool("destroy", true);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+            return;
+
+        Gizmos.DrawWireSphere(attackPoint.transform.position, attackRange);
+    }
+}
+        
