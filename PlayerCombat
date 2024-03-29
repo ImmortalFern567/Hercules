@@ -38,13 +38,13 @@ public class PlayerCombat : MonoBehaviour
         foreach(Collider2D enemy in hitEnemies) //damage enemies 
         {
             Debug.Log("We hit " + enemy.name);
-            enemy.GetComponent<EnemyHealth>().health -= damage;
+            enemy.GetComponent<EnemyHealth>().health -= damage; //enemy health becomes equal to damage that's been dealt
         }
     }
 
-    public void endAttack()
+    public void endAttack() //funtion called at the end of the attack animation
     {
-        anim.SetBool("isAttacking", false);
+        anim.SetBool("isAttacking", false); //check if we can swap animations (is attack done or not)
     }
 
     public void Destroy()
@@ -52,12 +52,11 @@ public class PlayerCombat : MonoBehaviour
         anim.SetBool("destroy", true);
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected() //Grab ability to draw attack sphere
     {
         if (attackPoint == null)
             return;
 
-        Gizmos.DrawWireSphere(attackPoint.transform.position, attackRange);
+        Gizmos.DrawWireSphere(attackPoint.transform.position, attackRange); //draw attack sphere 
     }
 }
-        
